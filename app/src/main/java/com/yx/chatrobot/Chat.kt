@@ -37,20 +37,27 @@ import java.util.*
 @Composable
 fun ChatScreen(viewModel: MainViewModel) {
 
+    val listState = viewModel.listState
     Surface() {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
                 Message(
-                    viewModel, modifier = Modifier.height(510.dp)
+                    viewModel,
+                    modifier = Modifier.height(510.dp),
+                    listState = listState
                 )
-                UserInput(viewModel)
+                UserInput(viewModel, listState)
             }
         }
     }
 }
 
 @Composable
-fun Message(viewModel: MainViewModel, modifier: Modifier = Modifier) {
+fun Message(
+    viewModel: MainViewModel,
+    modifier: Modifier = Modifier,
+    listState: LazyListState
+) {
     val chatList = remember {
         viewModel.messages
     }
@@ -58,6 +65,7 @@ fun Message(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = Modifier
                 .background(MaterialTheme.colors.background),
+            state = listState
         ) {
             items(chatList) { item ->
                 MessageItem(message = item)
@@ -69,11 +77,13 @@ fun Message(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UserInput(viewModel: MainViewModel) {
+fun UserInput(
+    viewModel: MainViewModel,
+    listState: LazyListState
+) {
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
-    val scrollState: LazyListState = rememberLazyListState()
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -129,7 +139,7 @@ fun UserInput(viewModel: MainViewModel) {
                                     textFieldValue.value = TextFieldValue("")
                                     keyboard?.hide()
                                     coroutineScope.launch {
-                                        scrollState.animateScrollToItem(0)
+                                        listState.animateScrollToItem(viewModel.messages.size-1)
                                     }
                                 } else {
                                     Toast.makeText(

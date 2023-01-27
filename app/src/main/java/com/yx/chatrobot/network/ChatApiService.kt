@@ -27,15 +27,7 @@ private val retrofit = Retrofit.Builder()
     .client(client)
     .build()
 
-//interface ChatApiService {
-//    @Headers(
-//        "Content-Type:application/json",
-//        "Authorization:Bearer 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"
-//    )
-//    @POST("completions")
-//    suspend fun getReply(@Body requestData: RequestBody): Call<List<ResponseData>>
-//}
-//
+
 
 
 interface ChatApiService {
