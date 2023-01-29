@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yx.chatrobot.ui.AppViewModelProvider
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -25,8 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Preview
 @Composable
 fun HomeScreen() {
-    val viewModel: MainViewModel = viewModel()
-    ChatScreen(viewModel = viewModel)
+    ChatScreen()
 }
 
 

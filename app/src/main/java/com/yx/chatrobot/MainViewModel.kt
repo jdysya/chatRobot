@@ -2,47 +2,53 @@ package com.yx.chatrobot
 
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yx.chatrobot.data.Message
+import com.yx.chatrobot.data.ChatDb
+import com.yx.chatrobot.data.MessageUiState
+import com.yx.chatrobot.data.entity.Message
+import com.yx.chatrobot.data.repository.MessageRepository
+import com.yx.chatrobot.data.toMessage
+import com.yx.chatrobot.data.toMessageUiState
 import com.yx.chatrobot.domain.ChatResponse
 import com.yx.chatrobot.domain.RequestBody
 import com.yx.chatrobot.network.ChatApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val messageRepository: MessageRepository
+) : ViewModel() {
     var fontSize = 20 // 当前页面的字体大小
-
     private lateinit var restaurantsCall: Call<ChatResponse>
-    val messages = mutableStateListOf(
-        Message(R.drawable.user_avatar, "自己", 1674467705, "生命的意义是什么？", true),
-        Message(
-            R.drawable.robot_avatar,
-            "AI",
-            1674468715,
-            "人生的意义是活出自己的价值，不断发展自我，实现自我价值，追求自我价值的实现，为自己的人生赋予更多的意义，为自己的人生赋予更多的价值，为自己的人生赋予更多的意义，为自己的人生赋予更多的满足感，为自己的人生赋予更多的激情，为自己的人生赋予更多的梦想，为自己的人生赋予更多的希望，为自己的人生赋予更多的精彩。",
-            false
-        ),
-        Message(R.drawable.user_avatar, "自己", 1674468922, "你能用c语言写一段代码吗？",true),
-        Message(
-            R.drawable.robot_avatar,
-            "AI",
-            1674468996,
-            "#include <stdio.h>\n\nint main()\n{\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    printf(\"The sum of a and b is %d\\n\", c);\n    return 0;\n}",
-            false
-        )
-    )
+    private val userName: String = "自己"
+    private val aiName: String = "AI"
+
+    //    val messageUiStates = mutableStateListOf<MessageUiState>()
+    val chatListState: StateFlow<ChatUiState> =
+        messageRepository.getMessagesStreamByUserId(1314)
+            .filterNotNull()
+            .map { ChatUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = ChatUiState()
+            )
     val listState = LazyListState(0)// 记录聊天界面信息列表的位置状态
 
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
+
+
     fun getAiReply(content: String) {
+        updateMessageUiState(content, true) // 将用户的输入进行记录
         val requestBody = RequestBody("text-davinci-003", content, 0)
         restaurantsCall = ChatApi.retrofitService.getRestaurants(requestBody)
         restaurantsCall.enqueue(
@@ -51,32 +57,41 @@ class MainViewModel : ViewModel() {
                     call: Call<ChatResponse>,
                     response: Response<ChatResponse>
                 ) {
-                    Log.d("MYTEST", "获取信息成功")
                     response.body()?.choices?.get(0)?.let {
-                        Log.d("MYTEST", it.text)
-
-                        messages.add(
-                            Message(
-                                R.drawable.robot_avatar,
-                                "AI",
-                                Date().time / 1000,
-                                it.text.trim(),
-                                false
-                            )
-                        )
-
+                        updateMessageUiState(it.text.trim(), false)
                     }
                     // 当从接口中获取到回复后，需要跳转到信息列表对应的位置
-                    viewModelScope.launch {
-                        listState.scrollToItem(messages.size - 1)
-                    }
-
+//                    viewModelScope.launch {
+//                        listState.scrollToItem(chatListState.value.chatList.size)
+//                    }
                 }
 
                 override fun onFailure(call: Call<ChatResponse>, t: Throwable) {
                     t.printStackTrace()
                     Log.d("MYTEST", "获取信息失败")
                 }
+
+
             })
     }
+
+
+    fun updateMessageUiState(result: String, isSelf: Boolean) {
+        val tmp = MessageUiState(
+            name = if (isSelf) userName else aiName,
+            time = Date().time / 1000,
+            content = result,
+            isSelf = isSelf
+        )
+
+        viewModelScope.launch {
+            messageRepository.insertMessage(tmp.toMessage())
+            delay(100)
+            listState.scrollToItem(chatListState.value.chatList.size - 1)
+        }
+    }
+
+    data class ChatUiState(val chatList: List<Message> = listOf())
+
+
 }

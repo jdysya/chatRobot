@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 
@@ -78,8 +79,7 @@ fun DrawerMenuView(
 
 
 @Composable
-fun ModalDrawerContentHeader() {
-    val viewModel:MainViewModel = viewModel()
+fun ModalDrawerContentHeader(viewModel: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

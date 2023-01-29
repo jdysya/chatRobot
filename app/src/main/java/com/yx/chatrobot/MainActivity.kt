@@ -9,6 +9,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yx.chatrobot.ui.AppViewModelProvider
 import com.yx.chatrobot.ui.theme.ChatRobotTheme
 import kotlinx.coroutines.launch
 
@@ -31,7 +33,9 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scaffoldState = rememberScaffoldState()
     var selectedIndex by remember { mutableStateOf(0) }
@@ -44,13 +48,10 @@ fun MainScreen() {
         topBar = {
             //(1)增加顶部动作栏
             TopBarView(currentScreen = currentScreen, scaffoldState = scaffoldState)
-//            ModalDrawerTopAppBar(openDrawer)
         },
         drawerContent = {
-            //(2)增加侧滑菜单
-//            TopBarView(currentScreen = currentScreen, scaffoldState = scaffoldState)
-//            DrawerMenuView(currentScreen = currentScreen, scaffoldState = scaffoldState)
-            ModalDrawerContentHeader()
+            //(2)增加侧滑菜单en, scaffoldState = scaffoldState)
+            ModalDrawerContentHeader(viewModel)
             ModelDrawerContentBody(
                 selectedIndex,
                 onSelected = {

@@ -1,7 +1,6 @@
 package com.yx.chatrobot
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,25 +21,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yx.chatrobot.data.Message
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yx.chatrobot.data.MessageUiState
+import com.yx.chatrobot.data.toMessageUiState
+import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ChatScreen(viewModel: MainViewModel) {
+fun ChatScreen(
+    viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
 
     val listState = viewModel.listState
     Surface() {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize()) {
-                Message(
+                ChatDisplay(
                     viewModel,
                     modifier = Modifier.height(510.dp),
                     listState = listState
@@ -53,22 +57,21 @@ fun ChatScreen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun Message(
+fun ChatDisplay(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier,
     listState: LazyListState
 ) {
-    val chatList = remember {
-        viewModel.messages
-    }
+    val chatUiState by viewModel.chatListState.collectAsState()
+
     Surface(modifier = modifier) {
         LazyColumn(
             modifier = Modifier
                 .background(MaterialTheme.colors.background),
             state = listState
         ) {
-            items(chatList) { item ->
-                MessageItem(message = item)
+            items(chatUiState.chatList) { item ->
+                MessageItem(messageUiState = item.toMessageUiState())
             }
         }
     }
@@ -128,20 +131,8 @@ fun UserInput(
                             IconButton(onClick = {
                                 if (!textFieldValue.value.text.isEmpty()) {
                                     viewModel.getAiReply(textFieldValue.value.text)
-                                    viewModel.messages.add(
-                                        Message(
-                                            R.drawable.user_avatar,
-                                            "自己",
-                                            Date().time / 1000,
-                                            textFieldValue.value.text,
-                                            true
-                                        )
-                                    )
                                     textFieldValue.value = TextFieldValue("")
                                     keyboard?.hide()
-                                    coroutineScope.launch {
-                                        listState.animateScrollToItem(viewModel.messages.size-1)
-                                    }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -164,13 +155,13 @@ fun UserInput(
 
 
 @Composable
-fun MessageItem(message: Message) {
+fun MessageItem(messageUiState: MessageUiState) {
     Row(
         modifier = Modifier
             .padding(all = 8.dp)
     ) {
         Image(
-            painter = painterResource(message.imageResourceId),
+            painter = painterResource(if (messageUiState.isSelf) R.drawable.user_avatar else R.drawable.robot_avatar),
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
@@ -182,7 +173,7 @@ fun MessageItem(message: Message) {
 
         Column {
             Text(
-                text = message.name,
+                text = messageUiState.name,
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.subtitle2
             )
@@ -192,12 +183,13 @@ fun MessageItem(message: Message) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 elevation = 3.dp,
+                color = if(messageUiState.isSelf) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
                 modifier = Modifier
                     .animateContentSize()
                     .padding(1.dp)
             ) {
                 Text(
-                    text = message.content,
+                    text = messageUiState.content,
                     modifier = Modifier.padding(all = 4.dp),
                     fontSize = 20.sp
                 )
