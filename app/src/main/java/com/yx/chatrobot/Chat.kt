@@ -133,7 +133,8 @@ fun UserInput(
                                             R.drawable.user_avatar,
                                             "自己",
                                             Date().time / 1000,
-                                            textFieldValue.value.text
+                                            textFieldValue.value.text,
+                                            true
                                         )
                                     )
                                     textFieldValue.value = TextFieldValue("")

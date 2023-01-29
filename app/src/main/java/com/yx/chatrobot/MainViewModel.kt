@@ -23,19 +23,21 @@ class MainViewModel : ViewModel() {
 
     private lateinit var restaurantsCall: Call<ChatResponse>
     val messages = mutableStateListOf(
-        Message(R.drawable.user_avatar, "自己", 1674467705, "生命的意义是什么？"),
+        Message(R.drawable.user_avatar, "自己", 1674467705, "生命的意义是什么？", true),
         Message(
             R.drawable.robot_avatar,
             "AI",
             1674468715,
-            "人生的意义是活出自己的价值，不断发展自我，实现自我价值，追求自我价值的实现，为自己的人生赋予更多的意义，为自己的人生赋予更多的价值，为自己的人生赋予更多的意义，为自己的人生赋予更多的满足感，为自己的人生赋予更多的激情，为自己的人生赋予更多的梦想，为自己的人生赋予更多的希望，为自己的人生赋予更多的精彩。"
+            "人生的意义是活出自己的价值，不断发展自我，实现自我价值，追求自我价值的实现，为自己的人生赋予更多的意义，为自己的人生赋予更多的价值，为自己的人生赋予更多的意义，为自己的人生赋予更多的满足感，为自己的人生赋予更多的激情，为自己的人生赋予更多的梦想，为自己的人生赋予更多的希望，为自己的人生赋予更多的精彩。",
+            false
         ),
-        Message(R.drawable.user_avatar, "自己", 1674468922, "你能用c语言写一段代码吗？"),
+        Message(R.drawable.user_avatar, "自己", 1674468922, "你能用c语言写一段代码吗？",true),
         Message(
             R.drawable.robot_avatar,
             "AI",
             1674468996,
-            "#include <stdio.h>\n\nint main()\n{\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    printf(\"The sum of a and b is %d\\n\", c);\n    return 0;\n}"
+            "#include <stdio.h>\n\nint main()\n{\n    int a = 10;\n    int b = 20;\n    int c = a + b;\n    printf(\"The sum of a and b is %d\\n\", c);\n    return 0;\n}",
+            false
         )
     )
     val listState = LazyListState(0)// 记录聊天界面信息列表的位置状态
@@ -58,7 +60,8 @@ class MainViewModel : ViewModel() {
                                 R.drawable.robot_avatar,
                                 "AI",
                                 Date().time / 1000,
-                                it.text.trim()
+                                it.text.trim(),
+                                false
                             )
                         )
 

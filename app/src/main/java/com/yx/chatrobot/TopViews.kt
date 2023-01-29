@@ -102,8 +102,6 @@ fun MenuItemView(icon: ImageVector, title: String, action: () -> Unit) {
     val viewModel:MainViewModel = viewModel()
     DropdownMenuItem(onClick = {
         //（4）增加下拉菜单的动作处理
-        viewModel.messages.add(Message(R.drawable.user_avatar,"自己",1674715474,"这也是计划的一部分"))
-        Log.d("MYTEST",viewModel.messages.size.toString())
 
     }) {
         Icon(imageVector = icon, contentDescription = title)
