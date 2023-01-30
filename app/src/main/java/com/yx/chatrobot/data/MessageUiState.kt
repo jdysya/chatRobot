@@ -12,12 +12,12 @@ data class MessageUiState(
     val isSelf: Boolean = false // 是否为本人（否则为 AI 回复）
 )
 
-fun MessageUiState.toMessage(): Message = Message(
+fun MessageUiState.toMessage(userId:Int): Message = Message(
     id = id,
     name = name,
     time = time,
     content = content,
-    userId = 1314,
+    userId = userId,
     isSelf = isSelf
 )
 

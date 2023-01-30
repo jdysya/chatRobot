@@ -49,6 +49,7 @@ sealed class Screen(
     val icon: ImageVector,
     val loadScreen: @Composable () -> Unit
 ) {
+    @RequiresApi(Build.VERSION_CODES.O)
     object HomePage : Screen("home", "首页", Icons.Filled.Home, {
         HomeScreen()
     })

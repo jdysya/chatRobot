@@ -5,15 +5,18 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.yx.chatrobot.data.dao.MessageDao
+import com.yx.chatrobot.data.dao.UserDao
 import com.yx.chatrobot.data.entity.Message
+import com.yx.chatrobot.data.entity.User
 
 @Database(
-    entities = [Message::class],
-    version = 1,
+    entities = [Message::class, User::class],
+    version = 5,
     exportSchema = false
 )
 abstract class ChatDb : RoomDatabase() {
     abstract val messageDao: MessageDao
+    abstract val userDao: UserDao
 
     companion object {
         @Volatile

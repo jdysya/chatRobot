@@ -1,15 +1,13 @@
 package com.yx.chatrobot
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,8 +76,10 @@ fun DrawerMenuView(
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ModalDrawerContentHeader(viewModel: MainViewModel) {
+    val userState = viewModel.userState.collectAsState().value
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,10 +96,10 @@ fun ModalDrawerContentHeader(viewModel: MainViewModel) {
         )
 
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = "聊天机器人", fontWeight = FontWeight.Bold, fontSize = (viewModel.fontSize+2).sp)
+        Text(text = userState.name, fontWeight = FontWeight.Bold, fontSize = (viewModel.fontSize+2).sp)
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = "采用chatGPT接口", fontSize = viewModel.fontSize.sp)
+                Text(text = userState.description, fontSize = viewModel.fontSize.sp)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
             }

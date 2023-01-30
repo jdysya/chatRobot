@@ -8,12 +8,20 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.yx.chatrobot.ChatApplication
 import com.yx.chatrobot.MainViewModel
+import com.yx.chatrobot.ui.login.LoginViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             MainViewModel(
-                chatApplication().container.messageRepository
+                this.createSavedStateHandle(),
+                chatApplication().container.messageRepository,
+                chatApplication().container.userRepository
+            )
+        }
+        initializer {
+            LoginViewModel(
+                chatApplication().container.userRepository
             )
         }
 
