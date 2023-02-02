@@ -10,8 +10,11 @@ class OfflineConfigRepository(
     override fun getConfigByUserIdStream(userId: Int): Flow<Config> =
         configDao.getConfigByUserIdStream(userId)
 
-    override suspend fun getConfigByUserId(userId: Int): Config =
-        configDao.getConfigByUserId(userId)
+    override suspend fun getConfigByUserId(userId: Int): Config {
+        val res = configDao.getConfigByUserId(userId)
+        return res ?: Config()
+    }
+
 
     override suspend fun getConfigIdByUserId(userId: Int): Int {
         val res = configDao.getConfigIdByUserId(userId)

@@ -29,7 +29,6 @@ class MainViewModel(
     private val configRepository: ConfigRepository
 ) : ViewModel() {
     private val userId: Int = checkNotNull(savedStateHandle["userId"])
-    var fontSize = 20 // 当前页面的字体大小
     private lateinit var restaurantsCall: Call<ChatResponse>
     var configUiState by mutableStateOf(ConfigUiState())
         private set
@@ -62,6 +61,7 @@ class MainViewModel(
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = ChatUiState()
             )
+
     val listState = LazyListState(0)// 记录聊天界面信息列表的位置状态
 
 
@@ -76,7 +76,18 @@ class MainViewModel(
                     response: Response<ChatResponse>
                 ) {
                     response.body()?.choices?.get(0)?.let {
-                        updateMessageUiState(it.text.trim(), false)
+                        viewModelScope.launch {
+                            val realTimeConfig =
+                                async { configRepository.getConfigByUserId(userId) }.await()
+                            if (realTimeConfig.id != 0) {
+                                // 使用最新的机器人名称
+                                configUiState =
+                                    configUiState.copy(robotName = realTimeConfig.robotName)
+                            }
+                            updateMessageUiState(it.text.trim(), false)
+
+                        }
+
                     }
                 }
 

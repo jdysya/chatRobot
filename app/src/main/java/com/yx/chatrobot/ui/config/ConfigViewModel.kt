@@ -107,19 +107,26 @@ class ConfigViewModel(
 
     }
 
-    fun saveConfig() {
+    fun saveConfig(
+        onSaveClick: () -> Unit
+    ) {
         viewModelScope.launch {
             //先判断用户在数据库中有没有配置记录，
             // 若没有，则插入
             // 否则，更新用户的配置项
-            val flag = async { configRepository.getConfigIdByUserId(userId) }
-            if (flag.await() != 0) {
-                configRepository.update(configUiState.toConfig(flag.await(), userId))
-            } else {
-                configRepository.insert(configUiState.toConfig(userId = userId))
+            try {
+                val flag = async { configRepository.getConfigIdByUserId(userId) }
+                if (flag.await() != 0) {
+                    configRepository.update(configUiState.toConfig(flag.await(), userId))
+                } else {
+                    configRepository.insert(configUiState.toConfig(userId = userId))
+                }
+                userRepository.updateNameById(userId, userUiState.name)// 保存用户昵称
+                userRepository.updateDesById(userId, userUiState.description) // 保存用户签名
+                onSaveClick()
+            } catch (e: java.lang.Exception) {
+                Log.e("mytest", "出现错误:${e.message}")
             }
-            userRepository.updateNameById(userId, userUiState.name)// 保存用户昵称
-            userRepository.updateDesById(userId, userUiState.description) // 保存用户签名
         }
     }
 

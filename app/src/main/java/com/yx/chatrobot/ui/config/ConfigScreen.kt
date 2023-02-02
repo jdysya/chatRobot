@@ -2,12 +2,14 @@ package com.yx.chatrobot.ui.config
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -38,12 +40,20 @@ fun ConfigScreen(
     val drawerState: BottomDrawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
     val openDrawer: () -> Unit = { coroutineScope.launch { drawerState.expand() } }
     var selectedBottomDrawerIndex by remember { configViewModel.drawerIndex }
+    val context = LocalContext.current
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    configViewModel.saveConfig()
+                    configViewModel.saveConfig(
+                        onSaveClick = {
+                            Toast.makeText(
+                                context,
+                                "保存成功",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        })
                     Log.d("mytest", configViewModel.configUiState.toString())
                 },
                 modifier = Modifier,
@@ -127,9 +137,13 @@ fun DrawerContentSelect(
     ) {
 
         Column(modifier = Modifier.padding(8.dp)) {
-            Text("Mail", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(
+                configViewModel.selectToShow.value.toString(),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.body1
+            )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = "user@abc.com")
+                Text(text = "请按照要求输入，否则可能造成程序异常",style = MaterialTheme.typography.body2)
             }
         }
         configItem.get(listName.value)?.forEachIndexed { index, pair ->
@@ -166,10 +180,13 @@ fun DrawerContentInput(
     ) {
 
         Column(modifier = Modifier.padding(8.dp)) {
-            Text("Mail", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(
+                configViewModel.selectToShow.value,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.body1
+            )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = "user@abc.com")
-
+                Text(text = "请按照要求输入，否则可能造成程序异常",style = MaterialTheme.typography.body2)
             }
         }
         OutlinedTextField(
