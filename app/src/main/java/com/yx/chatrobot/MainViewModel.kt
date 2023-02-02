@@ -67,10 +67,9 @@ class MainViewModel(
                         updateMessageUiState(it.text.trim(), false)
                     }
                 }
-
                 override fun onFailure(call: Call<ChatResponse>, t: Throwable) {
                     t.printStackTrace()
-                    Log.d("MYTEST", "获取信息失败")
+                    Log.e("MYTEST", "获取信息失败")
                 }
             })
     }

@@ -26,6 +26,7 @@ class LoginViewModel(
     var currentStatus by mutableStateOf("待登录") // 记录当前的状态
         private set
 
+
     fun updateUiState(newLoginUiState: LoginUiState) {
         loginUiState = newLoginUiState.copy()
     }

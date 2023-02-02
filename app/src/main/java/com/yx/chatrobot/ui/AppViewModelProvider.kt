@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.yx.chatrobot.ChatApplication
 import com.yx.chatrobot.MainViewModel
+import com.yx.chatrobot.ui.config.ConfigScreen
+import com.yx.chatrobot.ui.config.ConfigViewModel
 import com.yx.chatrobot.ui.login.LoginViewModel
 
 object AppViewModelProvider {
@@ -22,6 +24,13 @@ object AppViewModelProvider {
         initializer {
             LoginViewModel(
                 chatApplication().container.userRepository
+            )
+        }
+        initializer {
+            ConfigViewModel(
+                this.createSavedStateHandle(),
+                chatApplication().userPreferencesRepository,
+                chatApplication().container.configRepository
             )
         }
 

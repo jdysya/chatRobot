@@ -102,7 +102,6 @@ fun ItemInputForm(
     loginUiState: LoginUiState,
     onValueChange: (LoginUiState) -> Unit = {},
     loginViewModel: LoginViewModel
-
 ) {
     val fullWidthModifier =
         Modifier

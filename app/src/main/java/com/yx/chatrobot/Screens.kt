@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yx.chatrobot.ui.AppViewModelProvider
+import com.yx.chatrobot.ui.config.ConfigScreen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -30,9 +31,10 @@ fun HomeScreen() {
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingScreen() {
-
+    ConfigScreen()
 }
 
 

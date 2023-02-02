@@ -1,14 +1,12 @@
 package com.yx.chatrobot.data
 
 import android.content.Context
-import com.yx.chatrobot.data.repository.MessageRepository
-import com.yx.chatrobot.data.repository.OfflineMessageRepository
-import com.yx.chatrobot.data.repository.OfflineUserRepository
-import com.yx.chatrobot.data.repository.UserRepository
+import com.yx.chatrobot.data.repository.*
 
 interface AppContainer {
     val messageRepository: MessageRepository
     val userRepository: UserRepository
+    val configRepository: ConfigRepository
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
@@ -20,5 +18,9 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
     override val userRepository: UserRepository by lazy {
         OfflineUserRepository(ChatDb.getDatabase((context)).userDao)
+    }
+
+    override val configRepository: ConfigRepository by lazy {
+        OfflineConfigRepository(ChatDb.getDatabase(context).configDao)
     }
 }
