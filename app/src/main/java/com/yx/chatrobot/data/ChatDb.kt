@@ -13,7 +13,7 @@ import com.yx.chatrobot.data.entity.User
 
 @Database(
     entities = [Message::class, User::class, Config::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class ChatDb : RoomDatabase() {

@@ -177,7 +177,7 @@ fun DrawerContentInput(
             modifier = fullWidthModifier,
             value = configViewModel.currentInputValue,
             label = {
-                Text(text = "账号")
+                Text(text = "配置")
             },
             placeholder = { Text("请输入对应的数值") },
             onValueChange = {

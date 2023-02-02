@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.yx.chatrobot.data.*
 import com.yx.chatrobot.data.entity.Message
 import com.yx.chatrobot.data.entity.User
+import com.yx.chatrobot.data.repository.ConfigRepository
 import com.yx.chatrobot.data.repository.MessageRepository
 import com.yx.chatrobot.data.repository.UserRepository
 import com.yx.chatrobot.domain.ChatResponse
@@ -24,13 +25,25 @@ import java.util.*
 class MainViewModel(
     savedStateHandle: SavedStateHandle,
     private val messageRepository: MessageRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val configRepository: ConfigRepository
 ) : ViewModel() {
     private val userId: Int = checkNotNull(savedStateHandle["userId"])
     var fontSize = 20 // 当前页面的字体大小
     private lateinit var restaurantsCall: Call<ChatResponse>
-    private val userName: String = "自己"
-    private val aiName: String = "AI"
+    var configUiState by mutableStateOf(ConfigUiState())
+        private set
+    val themeColor = true
+
+    init {
+        viewModelScope.launch {
+            configUiState = configRepository.getConfigByUserIdStream(userId)
+                .filterNotNull()
+                .first()
+                .toConfigUiState()
+        }
+    }
+
     val userState: StateFlow<UserUiState> =
         userRepository.getUserById(userId)
             .filterNotNull()
@@ -55,7 +68,7 @@ class MainViewModel(
 
     fun getAiReply(content: String) {
         updateMessageUiState(content, true) // 将用户的输入进行记录
-        val requestBody = RequestBody("text-davinci-003", content, 0)
+        val requestBody = configUiState.toRequestBody(content)
         restaurantsCall = ChatApi.retrofitService.getRestaurants(requestBody)
         restaurantsCall.enqueue(
             object : Callback<ChatResponse> {
@@ -67,6 +80,7 @@ class MainViewModel(
                         updateMessageUiState(it.text.trim(), false)
                     }
                 }
+
                 override fun onFailure(call: Call<ChatResponse>, t: Throwable) {
                     t.printStackTrace()
                     Log.e("MYTEST", "获取信息失败")
@@ -77,7 +91,7 @@ class MainViewModel(
 
     fun updateMessageUiState(result: String, isSelf: Boolean) {
         val tmp = MessageUiState(
-            name = if (isSelf) userState.value.name else aiName,
+            name = if (isSelf) userState.value.name else configUiState.robotName,
             time = Date().time / 1000,
             content = result,
             isSelf = isSelf,

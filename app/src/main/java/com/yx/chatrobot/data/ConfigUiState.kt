@@ -12,8 +12,10 @@ data class ConfigUiState(
     val maxTokens: Int = 60,
     val temperature: Double = 0.5,
     val topP: Double = 1.0,
-    val stop: String = ""
+    val frequency_penalty: Double = 0.0,
+    val presence_penalty: Double = 0.6
 )
+
 
 fun Config.toConfigUiState() = ConfigUiState(
     robotName = robotName,
@@ -21,7 +23,8 @@ fun Config.toConfigUiState() = ConfigUiState(
     maxTokens = maxTokens,
     temperature = temperature,
     topP = topP,
-    stop = stop
+    presence_penalty = presence_penalty,
+    frequency_penalty = frequency_penalty
 )
 
 fun ConfigUiState.toConfig(id: Int = 0, userId: Int) = Config(
@@ -31,18 +34,18 @@ fun ConfigUiState.toConfig(id: Int = 0, userId: Int) = Config(
     maxTokens = maxTokens,
     temperature = temperature,
     topP = topP,
-    stop = stop,
-    userId = userId
+    userId = userId,
+    frequency_penalty = frequency_penalty,
+    presence_penalty = presence_penalty
 )
 
-//fun ConfigUiState.toRequestBody(prompt: String) = RequestBody(
-//    model = model,
-//    max_tokens = maxTokens,
-//    prompt = prompt,
-//    temperature = temperature,
-//    top_p = topP,
-//    stop = stop
-//)
+fun ConfigUiState.toRequestBody(prompt: String) = RequestBody(
+    model = model,
+    max_tokens = maxTokens,
+    prompt = prompt,
+    temperature = temperature,
+    top_p = topP
+)
 
 
 val modelList = listOf(

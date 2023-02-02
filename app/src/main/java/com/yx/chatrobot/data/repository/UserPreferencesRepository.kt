@@ -12,11 +12,11 @@ class UserPreferencesRepository(
     private val dataStore: DataStore<Preferences>
 ) {
     private companion object {
-        val ROBOT_NAME = stringPreferencesKey("robot_name")
+        val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
         const val TAG = "UserPreferencesRepo"
     }
 
-    val config = dataStore.data
+    val themeConfig: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
                 Log.e(TAG, "Error reading preferences.", it)
@@ -26,12 +26,12 @@ class UserPreferencesRepository(
             }
         }
         .map { preferences ->
-            preferences[ROBOT_NAME] ?: "机器人"
+            preferences[IS_DARK_THEME] ?: false
         }
 
-    suspend fun saveUserPreference() {
+    suspend fun saveUserPreference(value: Boolean) {
         dataStore.edit { preferences ->
-            preferences[ROBOT_NAME] = "AI"
+            preferences[IS_DARK_THEME] = value
         }
     }
 }

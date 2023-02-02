@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yx.chatrobot.ui.AppViewModelProvider
 import com.yx.chatrobot.ui.config.ConfigScreen
+import com.yx.chatrobot.ui.help.ChatHelpScreen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -40,8 +41,7 @@ fun SettingScreen() {
 
 @Composable
 fun HelpScreen() {
-
-
+    ChatHelpScreen()
 }
 
 

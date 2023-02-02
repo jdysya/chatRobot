@@ -28,6 +28,13 @@ class ConfigViewModel(
     var drawerIndex = mutableStateOf(0)
     var configUiState by mutableStateOf(ConfigUiState())
         private set
+    val themeState: StateFlow<Boolean> =
+        userPreferencesRepository.themeConfig
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false
+            )
 
     init {
         viewModelScope.launch {
@@ -45,7 +52,9 @@ class ConfigViewModel(
             "maxTokens" -> currentInputValue = configUiState.maxTokens.toString()
             "temperature" -> currentInputValue = configUiState.temperature.toString()
             "topP" -> currentInputValue = configUiState.topP.toString()
-            "stop" -> currentInputValue = configUiState.stop
+            "frequencyPenalty" -> currentInputValue = configUiState.frequency_penalty.toString()
+            "presencePenalty" -> currentInputValue = configUiState.presence_penalty.toString()
+            "robotName" -> currentInputValue = configUiState.robotName
         }
         // 根据当前的选项，匹配对应列表中的索引值
         configItem[name]?.forEachIndexed { index, pair ->
@@ -64,7 +73,12 @@ class ConfigViewModel(
                 "maxTokens" -> configUiState = configUiState.copy(maxTokens = value.toInt())
                 "temperature" -> configUiState = configUiState.copy(temperature = value.toDouble())
                 "topP" -> configUiState = configUiState.copy(topP = value.toDouble())
-                "stop" -> configUiState = configUiState.copy(stop = value)
+                "frequencyPenalty" -> configUiState =
+                    configUiState.copy(frequency_penalty = value.toDouble())
+                "presencePenalty" -> configUiState =
+                    configUiState.copy(presence_penalty = value.toDouble())
+                "robotName" -> configUiState = configUiState.copy(robotName = value)
+//                "stop" -> configUiState = configUiState.copy(stop = value)
             }
         } catch (e: NumberFormatException) {
             Log.e("mytest", "输入内容与对应数值不匹配:${e.message}")
@@ -87,19 +101,12 @@ class ConfigViewModel(
     }
 
 
-    //    val configState: StateFlow<String> =
-//        userPreferencesRepository.config
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(5_000),
-//                initialValue = ""
-//            )
-//
-//    fun saveConfig() {
-//        viewModelScope.launch {
-//            userPreferencesRepository.saveUserPreference()
-//        }
-//    }
+    fun saveThemeState(value: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserPreference(value)
+        }
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

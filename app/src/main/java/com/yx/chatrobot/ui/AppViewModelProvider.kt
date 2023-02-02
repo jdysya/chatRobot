@@ -18,12 +18,14 @@ object AppViewModelProvider {
             MainViewModel(
                 this.createSavedStateHandle(),
                 chatApplication().container.messageRepository,
-                chatApplication().container.userRepository
+                chatApplication().container.userRepository,
+                chatApplication().container.configRepository
             )
         }
         initializer {
             LoginViewModel(
-                chatApplication().container.userRepository
+                chatApplication().container.userRepository,
+                chatApplication().userPreferencesRepository,
             )
         }
         initializer {

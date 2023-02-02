@@ -11,14 +11,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
 import com.yx.chatrobot.data.LoginUiState
 import com.yx.chatrobot.data.entity.User
+import com.yx.chatrobot.data.repository.UserPreferencesRepository
 import com.yx.chatrobot.data.repository.UserRepository
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 class LoginViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
     var loginUiState by mutableStateOf(LoginUiState())
         private set
@@ -26,6 +31,13 @@ class LoginViewModel(
     var currentStatus by mutableStateOf("待登录") // 记录当前的状态
         private set
 
+    val themeState: StateFlow<Boolean> =
+        userPreferencesRepository.themeConfig
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = false
+            )
 
     fun updateUiState(newLoginUiState: LoginUiState) {
         loginUiState = newLoginUiState.copy()

@@ -1,10 +1,16 @@
 package com.yx.chatrobot.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yx.chatrobot.ui.AppViewModelProvider
+import com.yx.chatrobot.ui.config.ConfigViewModel
+import com.yx.chatrobot.ui.login.LoginViewModel
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -28,13 +34,13 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun ChatRobotTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
+fun ChatRobotTheme(
+    loginViewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    content: @Composable () -> Unit
+) {
+    val themeState = loginViewModel.themeState.collectAsState().value
+    Log.d("mytest", themeState.toString())
+    val colors = if (themeState) DarkColorPalette else LightColorPalette
     MaterialTheme(
         colors = colors,
         typography = Typography,
