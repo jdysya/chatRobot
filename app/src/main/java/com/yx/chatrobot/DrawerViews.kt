@@ -96,10 +96,17 @@ fun ModalDrawerContentHeader(viewModel: MainViewModel) {
         )
 
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = userState.name, fontWeight = FontWeight.Bold, fontSize = (viewModel.fontSize+2).sp)
+        Text(
+            text = userState.name,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h5
+        )
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = userState.description, fontSize = viewModel.fontSize.sp)
+                Text(
+                    text = userState.description,
+                    style = MaterialTheme.typography.body1
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
             }
@@ -141,7 +148,7 @@ fun DrawerButton(
     action: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel:MainViewModel = viewModel()
+    val viewModel: MainViewModel = viewModel()
     val colors = MaterialTheme.colors
     val imageAlpha = if (isSelected) {
         1f
@@ -187,8 +194,7 @@ fun DrawerButton(
                     fontWeight = FontWeight.Bold,
                     text = label,
                     style = MaterialTheme.typography.body2,
-                    color = textIconColor,
-                    fontSize = viewModel.fontSize.sp
+                    color = textIconColor
                 )
             }
         }

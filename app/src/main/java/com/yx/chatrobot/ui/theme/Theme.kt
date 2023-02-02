@@ -39,11 +39,17 @@ fun ChatRobotTheme(
     content: @Composable () -> Unit
 ) {
     val themeState = loginViewModel.themeState.collectAsState().value
-    Log.d("mytest", themeState.toString())
+    val fontState = loginViewModel.fontState.collectAsState().value
     val colors = if (themeState) DarkColorPalette else LightColorPalette
+    val fontTypography = when (fontState) {
+        "小" -> TypographySmall
+        "中" -> TypographyMedium
+        "大" -> TypographyLarge
+        else -> TypographyMedium
+    }
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = fontTypography,
         shapes = Shapes,
         content = content
     )

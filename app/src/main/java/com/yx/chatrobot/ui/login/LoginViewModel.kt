@@ -1,7 +1,5 @@
 package com.yx.chatrobot.ui.login
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,8 +26,7 @@ class LoginViewModel(
     var loginUiState by mutableStateOf(LoginUiState())
         private set
 
-    var currentStatus by mutableStateOf("待登录") // 记录当前的状态
-        private set
+
 
     val themeState: StateFlow<Boolean> =
         userPreferencesRepository.themeConfig
@@ -39,13 +36,22 @@ class LoginViewModel(
                 initialValue = false
             )
 
+    val fontState: StateFlow<String> =
+        userPreferencesRepository.fontConfig
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = "中"
+            )
+
     fun updateUiState(newLoginUiState: LoginUiState) {
         loginUiState = newLoginUiState.copy()
     }
 
     fun login(
         navigateToHome: (Int) -> Unit,
-        errorAlert: () -> Unit
+        errorAlert: (String,String) -> Unit,
+        normalAlert: (String) -> Unit
     ) {
         viewModelScope.launch {
             val user = async {
@@ -55,16 +61,17 @@ class LoginViewModel(
                 )
             }
             if (user.await().id != 0) {
-                currentStatus = "登录成功"
                 navigateToHome(user.await().id)
+                normalAlert(user.await().name)
             } else {
-                currentStatus = "账号或密码错误"
-                errorAlert()
+                errorAlert("登录失败","账号或密码错误")
             }
         }
     }
 
-    fun register() {
+    fun register(
+        infoAlert: (String, String) -> Unit
+    ) {
         if (isLoginValid()) {
             if (loginUiState.password == loginUiState.passRepeat) {
                 viewModelScope.launch {
@@ -79,19 +86,19 @@ class LoginViewModel(
                                 "这个人很懒，没有签名"
                             )
                         )
-                        currentStatus = "注册成功"
+                        infoAlert("注册成功","直接登录即可开始使用")
                     } else {
-                        currentStatus = "当前账号已被使用"
+                        infoAlert("注册失败","当前账号已被使用")
                     }
 
 
                 }
             } else {
-                currentStatus = "两次输入的密码不一致"
+                infoAlert("输入有误","两次输入的密码不一致")
             }
 
         } else {
-            currentStatus = "没有输入两次密码或没有输入账号"
+            infoAlert("输入有误","没有输入两次密码或没有输入账号")
         }
 
     }

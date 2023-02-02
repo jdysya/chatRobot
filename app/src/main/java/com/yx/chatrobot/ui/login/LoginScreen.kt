@@ -1,30 +1,22 @@
 package com.yx.chatrobot.ui.login
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.R
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.yx.chatrobot.data.LoginUiState
 import com.yx.chatrobot.ui.AppViewModelProvider
+import com.yx.chatrobot.ui.component.ChatAlertDialog
 import com.yx.chatrobot.ui.component.ChatRobotBar
-import com.yx.chatrobot.ui.component.ChatRobotInput
-import kotlin.math.log
 
 //@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -52,8 +44,17 @@ fun LoginBody(
     navController: NavHostController,
     loginViewModel: LoginViewModel
 ) {
+    var showAlertDialog by remember {
+        mutableStateOf(false)
+    }
     val uiState = loginViewModel.loginUiState
     val context = LocalContext.current
+    var alertTitle by remember {
+        mutableStateOf("这是标题")
+    }
+    var alertContent by remember {
+        mutableStateOf("这是内容")
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,27 +74,68 @@ fun LoginBody(
             OutlinedButton(
                 onClick = {
                     loginViewModel.login(
-                        navigateToHome = { navController.navigate("home/${it}") },
-                        errorAlert = { Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show() }
+                        navigateToHome = {
+                            navController.navigate("home/${it}")
+                        },
+                        errorAlert = { title: String, content: String ->
+                            alertTitle = title
+                            alertContent = content
+                            showAlertDialog = !showAlertDialog
+
+                        },
+                        normalAlert = {
+                            Toast.makeText(context, "登录成功，亲爱的$it", Toast.LENGTH_SHORT).show()
+                        }
                     )
+
                 },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
             ) {
-                Text("登录")
+                Text(
+                    text = "登录",
+                    style = MaterialTheme.typography.body2
+                )
+                if (showAlertDialog) {
+                    ChatAlertDialog(
+                        title = alertTitle,
+                        content = alertContent,
+                        onDismiss = { showAlertDialog = !showAlertDialog }
+                    )
+                }
+
+
             }
             Button(
                 modifier = modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .padding(start = 8.dp),
-                onClick = { loginViewModel.register() }
+                onClick = {
+                    loginViewModel.register(
+                        infoAlert = { title: String, content: String ->
+                            alertTitle = title
+                            alertContent = content
+                            showAlertDialog = !showAlertDialog
+                        }
+                    )
+                }
             ) {
-                Text("注册")
+                Text(
+                    text = "注册",
+                    style = MaterialTheme.typography.body2
+                )
+                if (showAlertDialog) {
+                    ChatAlertDialog(
+                        title = alertTitle,
+                        content = alertContent,
+                        onDismiss = { showAlertDialog = !showAlertDialog }
+                    )
+                }
             }
         }
-        Text(text = loginViewModel.currentStatus)
+
     }
 }
 
@@ -111,18 +153,34 @@ fun ItemInputForm(
         modifier = fullWidthModifier,
         value = loginUiState.account,
         label = {
-            Text(text = "账号")
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "账号"
+            )
         },
-        placeholder = { Text("请输入账号") },
+        placeholder = {
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "请输入账号"
+            )
+        },
         onValueChange = { onValueChange(loginUiState.copy(account = it)) },
     )
     OutlinedTextField(
         modifier = fullWidthModifier,
         value = loginUiState.password,
         label = {
-            Text(text = "密码")
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "密码"
+            )
         },
-        placeholder = { Text("请输入密码") },
+        placeholder = {
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "请输入密码"
+            )
+        },
         onValueChange = { onValueChange(loginUiState.copy(password = it)) },
         // 设置为密码模式
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -133,9 +191,17 @@ fun ItemInputForm(
         modifier = fullWidthModifier,
         value = loginUiState.passRepeat,
         label = {
-            Text(text = "验证密码")
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "验证密码"
+            )
         },
-        placeholder = { Text("注册请输入两次密码") },
+        placeholder = {
+            Text(
+                style = MaterialTheme.typography.subtitle2,
+                text = "注册请输入两次密码"
+            )
+        },
         onValueChange = { onValueChange(loginUiState.copy(passRepeat = it)) },
         // 设置为密码模式
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

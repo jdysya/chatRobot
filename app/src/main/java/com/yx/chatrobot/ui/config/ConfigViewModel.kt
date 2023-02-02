@@ -36,6 +36,14 @@ class ConfigViewModel(
                 initialValue = false
             )
 
+    val fontState: StateFlow<String> =
+        userPreferencesRepository.fontConfig
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = "中"
+            )
+
     init {
         viewModelScope.launch {
             configUiState = configRepository.getConfigByUserIdStream(userId)
@@ -59,9 +67,8 @@ class ConfigViewModel(
         // 根据当前的选项，匹配对应列表中的索引值
         configItem[name]?.forEachIndexed { index, pair ->
             when (name) {
-                "model" -> if (pair.first == configUiState.model) {
-                    drawerIndex.value = index
-                }
+                "model" -> if (pair.first == configUiState.model) drawerIndex.value = index
+                "fontSize" -> if (pair.first == fontState.value) drawerIndex.value = index
             }
         }
     }
@@ -70,6 +77,7 @@ class ConfigViewModel(
         try {
             when (selectToShow.value) { // 根据当前选择的值进行更新状态
                 "model" -> configUiState = configUiState.copy(model = value)
+                "fontSize" -> saveFontState(value)
                 "maxTokens" -> configUiState = configUiState.copy(maxTokens = value.toInt())
                 "temperature" -> configUiState = configUiState.copy(temperature = value.toDouble())
                 "topP" -> configUiState = configUiState.copy(topP = value.toDouble())
@@ -104,6 +112,12 @@ class ConfigViewModel(
     fun saveThemeState(value: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.saveUserPreference(value)
+        }
+    }
+
+    fun saveFontState(value: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserFontPreference(value)
         }
     }
 

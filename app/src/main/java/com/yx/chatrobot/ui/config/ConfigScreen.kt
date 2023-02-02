@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yx.chatrobot.DrawerButton
 import com.yx.chatrobot.data.ConfigUiState
-import com.yx.chatrobot.data.bottomDrawerList
 import com.yx.chatrobot.data.configItem
 import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch

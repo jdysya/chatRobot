@@ -33,7 +33,6 @@ class MainViewModel(
     private lateinit var restaurantsCall: Call<ChatResponse>
     var configUiState by mutableStateOf(ConfigUiState())
         private set
-    val themeColor = true
 
     init {
         viewModelScope.launch {

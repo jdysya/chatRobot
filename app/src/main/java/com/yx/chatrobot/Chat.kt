@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -183,16 +184,18 @@ fun MessageItem(messageUiState: MessageUiState) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 elevation = 3.dp,
-                color = if(messageUiState.isSelf) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
+                color = if (messageUiState.isSelf) MaterialTheme.colors.secondary else MaterialTheme.colors.surface,
                 modifier = Modifier
                     .animateContentSize()
                     .padding(1.dp)
             ) {
-                Text(
-                    text = messageUiState.content,
-                    modifier = Modifier.padding(all = 4.dp),
-                    fontSize = 20.sp
-                )
+                SelectionContainer {
+                    Text(
+                        text = messageUiState.content,
+                        modifier = Modifier.padding(all = 4.dp),
+                        style = MaterialTheme.typography.body1
+                    )
+                }
             }
         }
     }

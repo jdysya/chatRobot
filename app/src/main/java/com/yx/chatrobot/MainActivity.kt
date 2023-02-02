@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.yx.chatrobot.ui.AppViewModelProvider
 import com.yx.chatrobot.ui.theme.ChatRobotTheme
 import kotlinx.coroutines.launch
@@ -39,7 +40,8 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navController: NavController
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scaffoldState = rememberScaffoldState()
@@ -52,7 +54,10 @@ fun MainScreen(
     Scaffold(scaffoldState = scaffoldState,
         topBar = {
             //(1)增加顶部动作栏
-            TopBarView(currentScreen = currentScreen, scaffoldState = scaffoldState)
+            TopBarView(
+                navController = navController,
+                currentScreen = currentScreen,
+                scaffoldState = scaffoldState)
         },
         drawerContent = {
             //(2)增加侧滑菜单en, scaffoldState = scaffoldState)

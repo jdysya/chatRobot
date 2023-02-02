@@ -32,7 +32,9 @@ fun ChatNavHost(
                 type = NavType.IntType
             })
         ) {
-            MainScreen()
+            MainScreen(
+                navController = navController
+            )
         }
     }
 

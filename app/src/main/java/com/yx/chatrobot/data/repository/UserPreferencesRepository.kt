@@ -13,6 +13,7 @@ class UserPreferencesRepository(
 ) {
     private companion object {
         val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
+        val FONT_SIZE = stringPreferencesKey("font_size")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -29,9 +30,28 @@ class UserPreferencesRepository(
             preferences[IS_DARK_THEME] ?: false
         }
 
+    val fontConfig: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            preferences[FONT_SIZE] ?: "中"
+        }
+
     suspend fun saveUserPreference(value: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_DARK_THEME] = value
+        }
+    }
+
+    suspend fun saveUserFontPreference(value: String) {
+        dataStore.edit { preferences ->
+            preferences[FONT_SIZE] = value
         }
     }
 }

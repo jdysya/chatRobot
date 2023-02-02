@@ -44,7 +44,9 @@ fun ConfigUiState.toRequestBody(prompt: String) = RequestBody(
     max_tokens = maxTokens,
     prompt = prompt,
     temperature = temperature,
-    top_p = topP
+    top_p = topP,
+    frequency_penalty = frequency_penalty,
+    presence_penalty = presence_penalty
 )
 
 
@@ -55,13 +57,12 @@ val modelList = listOf(
     Pair("text-ada-001", Icons.Filled.Settings)
 )
 
-
-val bottomDrawerList = listOf(
-    Pair("Inbox", Icons.Filled.Inbox),
-    Pair("Outbox", Icons.Filled.Outbox),
-    Pair("Favorites", Icons.Filled.Favorite),
-    Pair("Archive", Icons.Filled.Archive),
-    Pair("Trash", Icons.Filled.Delete),
+val fontSizeList = listOf(
+    Pair("小", Icons.Filled.Settings),
+    Pair("中", Icons.Filled.Settings),
+    Pair("大", Icons.Filled.Settings)
 )
 
-val configItem = mapOf("model" to modelList, "test" to bottomDrawerList)
+
+
+val configItem = mapOf("model" to modelList, "fontSize" to fontSizeList)
