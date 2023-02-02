@@ -12,6 +12,7 @@ import com.yx.chatrobot.data.entity.Config
 import com.yx.chatrobot.data.repository.ConfigRepository
 import com.yx.chatrobot.data.repository.OfflineConfigRepository
 import com.yx.chatrobot.data.repository.UserPreferencesRepository
+import com.yx.chatrobot.data.repository.UserRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ class ConfigViewModel(
     savedStateHandle: SavedStateHandle,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val configRepository: ConfigRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val userId: Int = checkNotNull(savedStateHandle["userId"])
     var isListShow = mutableStateOf(false)
@@ -44,12 +46,19 @@ class ConfigViewModel(
                 initialValue = "中"
             )
 
+    var userUiState by mutableStateOf(UserUiState())
+        private set
+
     init {
         viewModelScope.launch {
             configUiState = configRepository.getConfigByUserIdStream(userId)
                 .filterNotNull()
                 .first()
                 .toConfigUiState()
+            userUiState = userRepository.getUserById(userId)
+                .filterNotNull()
+                .first()
+                .toUserUiState()
         }
     }
 
@@ -63,6 +72,8 @@ class ConfigViewModel(
             "frequencyPenalty" -> currentInputValue = configUiState.frequency_penalty.toString()
             "presencePenalty" -> currentInputValue = configUiState.presence_penalty.toString()
             "robotName" -> currentInputValue = configUiState.robotName
+            "userName" -> currentInputValue = userUiState.name
+            "description" -> currentInputValue = userUiState.description
         }
         // 根据当前的选项，匹配对应列表中的索引值
         configItem[name]?.forEachIndexed { index, pair ->
@@ -86,6 +97,8 @@ class ConfigViewModel(
                 "presencePenalty" -> configUiState =
                     configUiState.copy(presence_penalty = value.toDouble())
                 "robotName" -> configUiState = configUiState.copy(robotName = value)
+                "userName" -> userUiState = userUiState.copy(name = value)
+                "description" -> userUiState = userUiState.copy(description = value)
 //                "stop" -> configUiState = configUiState.copy(stop = value)
             }
         } catch (e: NumberFormatException) {
@@ -105,6 +118,8 @@ class ConfigViewModel(
             } else {
                 configRepository.insert(configUiState.toConfig(userId = userId))
             }
+            userRepository.updateNameById(userId, userUiState.name)// 保存用户昵称
+            userRepository.updateDesById(userId, userUiState.description) // 保存用户签名
         }
     }
 

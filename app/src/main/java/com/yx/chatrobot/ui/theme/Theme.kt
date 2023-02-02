@@ -45,7 +45,7 @@ fun ChatRobotTheme(
         "小" -> TypographySmall
         "中" -> TypographyMedium
         "大" -> TypographyLarge
-        else -> TypographyMedium
+        else -> TypographySmall
     }
     MaterialTheme(
         colors = colors,

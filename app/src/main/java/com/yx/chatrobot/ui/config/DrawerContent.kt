@@ -71,6 +71,7 @@ fun ExtraConfig(
     configViewModel: ConfigViewModel,
     openDrawer: () -> Unit,
 ) {
+    val userUiState = configViewModel.userUiState
     ListItem(
         text = {
             Text(
@@ -97,7 +98,75 @@ fun ExtraConfig(
                         text = configUiState.robotName
                     )
                     Icon(
-                        imageVector = Icons.Default.ExpandMore,
+                        imageVector = Icons.Default.Edit,
+                        modifier = Modifier.padding(end = 4.dp),
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+    )
+    ListItem(
+        text = {
+            Text(
+                style = MaterialTheme.typography.body1, text = "用户昵称"
+            )
+        },
+        secondaryText = {
+            Text(
+                style = MaterialTheme.typography.body2,
+                text = "聊天界面中用户显示的名称"
+            )
+        },
+        trailing = {
+            Button(
+                onClick = {
+                    configViewModel.updateState(false, "userName")
+                    openDrawer()
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Row {
+                    Text(
+                        style = MaterialTheme.typography.body2,
+                        text = userUiState.name
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        modifier = Modifier.padding(end = 4.dp),
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+    )
+    ListItem(
+        text = {
+            Text(
+                style = MaterialTheme.typography.body1, text = "用户签名"
+            )
+        },
+        secondaryText = {
+            Text(
+                style = MaterialTheme.typography.body2,
+                text = "个性签名"
+            )
+        },
+        trailing = {
+            Button(
+                onClick = {
+                    configViewModel.updateState(false, "description")
+                    openDrawer()
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Row {
+                    Text(
+                        style = MaterialTheme.typography.body2,
+                        text = userUiState.description
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Edit,
                         modifier = Modifier.padding(end = 4.dp),
                         contentDescription = null
                     )

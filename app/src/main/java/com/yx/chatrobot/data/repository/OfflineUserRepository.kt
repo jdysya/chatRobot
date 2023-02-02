@@ -8,7 +8,9 @@ class OfflineUserRepository(private val userDao: UserDao) : UserRepository {
     override fun getUserById(id: Int): Flow<User> {
         return userDao.getUserById(id)
     }
+
     override suspend fun insert(user: User) = userDao.insert(user)
+
     override suspend fun getUserByAccount(account: String, password: String): User {
         val res = userDao.getUserByAccount(account, password)
         // 如果查询不到对应的，则返回默认值
@@ -20,5 +22,9 @@ class OfflineUserRepository(private val userDao: UserDao) : UserRepository {
         val res = userDao.isExistSameAccount(account)
         return res == 1
     }
+
+    override suspend fun updateDesById(id: Int, newVal: String) = userDao.updateDesById(id, newVal)
+
+    override suspend fun updateNameById(id: Int, name: String) = userDao.updateNameById(id, name)
 
 }

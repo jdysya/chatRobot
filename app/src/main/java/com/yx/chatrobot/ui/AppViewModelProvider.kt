@@ -32,7 +32,9 @@ object AppViewModelProvider {
             ConfigViewModel(
                 this.createSavedStateHandle(),
                 chatApplication().userPreferencesRepository,
-                chatApplication().container.configRepository
+                chatApplication().container.configRepository,
+                chatApplication().container.userRepository
+
             )
         }
 

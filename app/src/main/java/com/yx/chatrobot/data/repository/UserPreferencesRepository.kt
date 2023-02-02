@@ -40,7 +40,7 @@ class UserPreferencesRepository(
             }
         }
         .map { preferences ->
-            preferences[FONT_SIZE] ?: "中"
+            preferences[FONT_SIZE] ?: "小"
         }
 
     suspend fun saveUserPreference(value: Boolean) {

@@ -15,3 +15,11 @@ fun User.toUserUiState() = UserUiState(
     account = account,
     description = description
 )
+
+fun UserUiState.toUser() = User(
+    id = id,
+    name = name,
+    account = account,
+    description = description,
+    password = ""
+)
