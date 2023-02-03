@@ -1,5 +1,6 @@
 package com.yx.chatrobot
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +36,7 @@ import com.yx.chatrobot.data.MessageUiState
 import com.yx.chatrobot.data.toMessageUiState
 import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -155,6 +158,7 @@ fun UserInput(
 }
 
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun MessageItem(messageUiState: MessageUiState) {
     Row(
@@ -173,11 +177,20 @@ fun MessageItem(messageUiState: MessageUiState) {
 
 
         Column {
-            Text(
-                text = messageUiState.name,
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.subtitle2
-            )
+            Row {
+                Text(
+                    text = messageUiState.name,
+                    color = MaterialTheme.colors.secondaryVariant,
+                    style = MaterialTheme.typography.subtitle2
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = messageUiState.dateStr,
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 0.25.sp
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 

@@ -16,7 +16,6 @@ fun ChatHeader(text: String, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 6.dp),
-        fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.h5,
         text = text
     )
