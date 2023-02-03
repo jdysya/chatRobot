@@ -4,27 +4,7 @@
 基于chatGPT的 open AI接口制作而成的聊天机器人，使用最新的jetpack compose构建的原生安卓应用
 
 #### 软件架构
-软件架构说明
 
-
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
 
 
 # 致谢
@@ -44,3 +24,8 @@
 ## 感谢以下教程
 > 官方的compose入门教程，很详细，面面俱到
 - [Android Basics with Compose](https://developer.android.com/courses/android-basics-compose/course)
+- [Kickstart-Modern-Android-Development-with-Jetpack-and-Kotlin书籍](https://www.packtpub.com/product/kickstart-modern-android-development-with-jetpack-and-kotlin/9781801811071)
+- [Jetpack Compose by Tutorials](raywenderlich.com)
+
+## 最后
+感谢我的移动应用开发的老师，带我入门
