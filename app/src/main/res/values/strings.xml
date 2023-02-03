@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">聊天机器人</string>
     <string name="help_text">
-        这是一个基于OpenAI官方提供的 api 所制作而成的聊天机器人应用，配置项中的各项参数的设置请参考官方文档
+        这是一个基于OpenAI官方提供的 api 所制作而成的聊天机器人应用，配置项中的各项参数的设置请参考官方文档，同时本项目已开源，若
+        需要了解后续更新以及更详细的文档，请关注开源仓库，我会及时推送代码以及更新发行版。
     </string>
 
     <string name="help_author">

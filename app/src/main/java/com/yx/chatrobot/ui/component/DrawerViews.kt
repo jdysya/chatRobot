@@ -14,6 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
-
 
 
 @Composable
@@ -117,6 +118,7 @@ fun ModelDrawerContentBody(
     scaffoldState: ScaffoldState,
 ) {
     val scope = rememberCoroutineScope()
+    val uriHandler: UriHandler = LocalUriHandler.current
     Column(modifier = Modifier.fillMaxWidth()) {
         screens.forEach { screen ->
             DrawerButton(
@@ -130,6 +132,14 @@ fun ModelDrawerContentBody(
                     }
                 })
         }
+
+        DrawerButton(
+            icon = Icons.Filled.OpenInNew,
+            isSelected = false,
+            label = "开源",
+            action = {
+                uriHandler.openUri("https://gitee.com/jdysya/chatRobot")
+            })
     }
 }
 
