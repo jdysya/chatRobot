@@ -24,12 +24,6 @@ import com.yx.chatrobot.ui.AppViewModelProvider
 import kotlinx.coroutines.launch
 
 
-/**
- * Drawer menu view
- * 定义侧滑的下面的菜单
- * @param selectedScreen Screens 要选择切换的界面
- * @param onMenuSelected Function1<[@kotlin.ParameterName] Screens, Unit>? 要处理的切换动作
- */
 
 @Composable
 fun DrawerMenuView(
