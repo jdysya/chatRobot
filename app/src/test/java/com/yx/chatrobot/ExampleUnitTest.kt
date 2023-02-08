@@ -51,12 +51,13 @@ class ExampleUnitTest {
 
     @Test
     fun passwordEncode() {
+
         println(encode("hello"))
     }
 
     @Test
     fun timeToString() {
-        val times = Date().time/1000
+        val times = Date().time / 1000
     }
 
 }

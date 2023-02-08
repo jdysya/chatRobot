@@ -78,7 +78,7 @@ fun TopMenuView(
                     putExtra(Intent.EXTRA_SUBJECT, "分享")
                     putExtra(
                         Intent.EXTRA_TEXT,
-                        "我正在使用聊天机器人，推荐你也使用:https://cloud.jdysya.top/#s/88r40pXg"
+                        "我正在使用聊天机器人，推荐你也使用:https://cloud.jdysya.top/#s/89FKGp8Q"
                     )
                 }
                 context.startActivity(
